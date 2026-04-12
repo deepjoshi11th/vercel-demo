@@ -12,7 +12,7 @@ app = FastAPI(
 )
 
 url: str = str(os.environ.get("SUPABASE_URL"))
-key: str = str(os.environ.get("SUPABASE_KEY"))
+key: str = str(os.environ.get("SUPABASE_SECRET_KEY"))
 supabase: Client = create_client(url, key)
 
 
