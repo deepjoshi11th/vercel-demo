@@ -43,4 +43,4 @@ def get_item(item_id: int):
 
 @app.get("/")
 def read_root():
-    return FileResponse("public/index.html")
+    return FileResponse("index.html")
