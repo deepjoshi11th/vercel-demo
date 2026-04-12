@@ -14,12 +14,15 @@ This example uses the Asynchronous Server Gateway Interface (ASGI) with FastAPI 
 
 ## Running Locally
 
-```bash
-npm i -g vercel
-vercel dev
+```
+source venv/bin/activate
+source env.sh
+lsof -i :8000
+kill <pid>
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Your FastAPI application is now available at `http://localhost:3000`.
+Your FastAPI application is now available at `http://localhost:8000`.
 
 ## One-Click Deploy
 
