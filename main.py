@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
+import os
+from supabase import create_client, Client
+from datetime import datetime
 
 
 app = FastAPI(
@@ -8,30 +11,34 @@ app = FastAPI(
     version="1.0.0",
 )
 
+url: str = str(os.environ.get("SUPABASE_URL"))
+key: str = str(os.environ.get("SUPABASE_KEY"))
+supabase: Client = create_client(url, key)
+
 
 @app.get("/api/data")
 def get_sample_data():
+    response = supabase.table("sample_table").select("*").execute()
+    data = response.data
     return {
-        "data": [
-            {"id": 1, "name": "Sample Item 1", "value": 100},
-            {"id": 2, "name": "Sample Item 2", "value": 200},
-            {"id": 3, "name": "Sample Item 3", "value": 300}
-        ],
-        "total": 3,
-        "timestamp": "2024-01-01T00:00:00Z"
+        "data": data,
+        "total": len(data),
+        "timestamp": datetime.utcnow().isoformat() + "Z"
     }
 
 
 @app.get("/api/items/{item_id}")
 def get_item(item_id: int):
-    return {
-        "item": {
-            "id": item_id,
-            "name": "Sample Item " + str(item_id),
-            "value": item_id * 100
-        },
-        "timestamp": "2024-01-01T00:00:00Z"
-    }
+    response = supabase.table("sample_table").select("*").eq("id", item_id).execute()
+    data = response.data
+    if data:
+        item = data[0]
+        return {
+            "item": item,
+            "timestamp": datetime.utcnow().isoformat() + "Z"
+        }
+    else:
+        return {"error": "Item not found"}
 
 
 @app.get("/")
