@@ -1,14 +1,44 @@
 .vercel
 *.log
 *.pyc
-__pycache__
+__pycache__/
+*.pyo
+*.pyd
 
-# Environments 
-.env 
-.venv 
-env/ 
-venv/ 
-ENV/ 
-env.bak/ 
-venv.bak/ 
+# Environments
+.env
+.env.local
+.env.*.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 env.sh
+
+# IDE
+.vscode/*
+!.vscode/launch.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node modules (if using npm/yarn)
+node_modules/
+.npm
+.yarn
+.pnp
+
+# Misc
+*.egg-info/
+dist/
+build/
+.coverage
+htmlcov/
+
