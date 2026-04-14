@@ -55,6 +55,17 @@ class ProfileDetailsResponse(BaseModel):
     id: str
     sensitive_part: str
 
+# Protected Data Endpoints
+def get_auth_header(authorization: Optional[str] = Header(None)) -> str:
+    """Extract authorization header from request."""
+    if not authorization:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authorization header missing",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return authorization
+
 
 # JWT validation function
 async def get_current_user(authorization: Optional[str] = None) -> dict:
@@ -148,12 +159,11 @@ async def login(request: LoginRequest):
 
 
 @app.get("/auth/me", response_model=UserResponse)
-async def get_current_user_profile(user: dict = Depends(lambda auth_header=None: get_current_user(auth_header))):
+async def get_current_user_profile(authorization: str = Depends(get_auth_header)):
     """
     Get current authenticated user profile.
     """
-    print("DEBUG - Current user:", user)  # Debugging statement
-    user = await user
+    user = await get_current_user(authorization)
     return UserResponse(
         id=user.id,
         email=user.email,
@@ -166,18 +176,6 @@ async def logout():
     Logout endpoint (token invalidation happens on client side).
     """
     return {"message": "Logged out successfully"}
-
-
-# Protected Data Endpoints
-def get_auth_header(authorization: Optional[str] = Header(None)) -> str:
-    """Extract authorization header from request."""
-    if not authorization:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authorization header missing",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return authorization
 
 
 @app.get("/api/data")
