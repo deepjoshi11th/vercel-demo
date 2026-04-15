@@ -3,7 +3,7 @@
   "outputDirectory": "frontend",
   "framework": "fastapi",
   "functions": {
-    "backend/main.py": {
+    "api/main.py": {
       "memory": 1024,
       "maxDuration": 60
     }
