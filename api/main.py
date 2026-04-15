@@ -1,8 +1,7 @@
 """FastAPI application entry point."""
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-import os
-from app import create_app
+from .app import create_app
 
 
 app = create_app()
