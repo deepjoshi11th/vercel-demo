@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd backend && pip install -r requirements.txt || cd ..",
+  "buildCommand": "cd api && pip install -r requirements.txt",
   "outputDirectory": "frontend",
   "framework": "fastapi",
   "functions": {
@@ -11,15 +11,15 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "backend/main.py"
+      "dest": "api/main.py"
     },
     {
       "src": "/auth/(.*)",
-      "dest": "backend/main.py"
+      "dest": "api/main.py"
     },
     {
       "src": "/(.*).json",
-      "dest": "backend/main.py"
+      "dest": "api/main.py"
     },
     {
       "src": "/(?!.*\\.(js|css|ico|json)$)(.*)",
