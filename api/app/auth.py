@@ -2,7 +2,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from .models import SignupRequest, LoginRequest, UserResponse
 from .config import supabase
-from .dependencies import get_current_user, get_auth_header
+from .dependencies import get_current_user
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -63,11 +63,10 @@ async def login(request: LoginRequest):
 
 
 @router.get("/me", response_model=UserResponse)
-async def get_current_user_profile(authorization: str = Depends(get_auth_header)):
+async def get_current_user_profile(user: dict = Depends(get_current_user)):
     """
     Get current authenticated user profile.
     """
-    user = await get_current_user(authorization)
     return UserResponse(
         id=user.id,
         email=user.email,
