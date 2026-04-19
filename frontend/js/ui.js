@@ -38,6 +38,7 @@ const UI = {
     downloadQrBtn: null,
     shareWhatsappBtn: null,
     shareFacebookBtn: null,
+    pasteBtn: null,
 
     // Initialize DOM elements
     init() {
@@ -75,6 +76,7 @@ const UI = {
         this.downloadQrBtn = document.getElementById('download-qr');
         this.shareWhatsappBtn = document.getElementById('share-whatsapp');
         this.shareFacebookBtn = document.getElementById('share-facebook');
+        this.pasteBtn = document.getElementById('paste-btn');
     },
 
     // Show authentication UI (not logged in)

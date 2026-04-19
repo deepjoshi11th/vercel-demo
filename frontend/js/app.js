@@ -298,6 +298,15 @@ const APP = {
             reader.readAsDataURL(blob);
         });
     },
+
+    async pasteFromClipboard() {
+        try {
+            const text = await navigator.clipboard.readText();
+            UI.setQrText(text);
+        } catch (error) {
+            alert('Failed to read from clipboard: ' + error.message);
+        }
+    }
 };
 
 // Initialize app when DOM is ready
