@@ -28,5 +28,5 @@ class ProfileDetailsResponse(BaseModel):
 class QRCodeRequest(BaseModel):
     text: str
     size: int = 5
-    back_color: tuple = (0, 0, 0)
-    fill_color: tuple = (255, 255, 255)
+    back_color: str = "#000000"
+    fill_color: str = "#FFFFFF"

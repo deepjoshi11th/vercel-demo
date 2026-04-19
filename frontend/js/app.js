@@ -76,6 +76,20 @@ const APP = {
         UI.viewProfileDetailsBtn.addEventListener('click', () => {
             this.handleViewProfileDetails();
         });
+
+        // QR code handlers
+        UI.qrForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleGenerateQR();
+        });
+
+        UI.downloadQrBtn.addEventListener('click', () => {
+            this.handleDownloadQR();
+        });
+
+        UI.shareQrBtn.addEventListener('click', () => {
+            this.handleShareQR();
+        });
     },
 
     async handleLogin() {
@@ -201,6 +215,49 @@ const APP = {
             }
         } catch (error) {
             UI.showError(error.message);
+        }
+    },
+
+    async handleGenerateQR() {
+        const data = UI.getQrFormValues();
+
+        if (!data.text) {
+            UI.showError('Please enter a link');
+            return;
+        }
+
+        try {
+            const blob = await API.generateQR(data);
+            UI.displayQrCode(blob);
+        } catch (error) {
+            UI.showError(error.message);
+        }
+    },
+
+    handleDownloadQR() {
+        const link = document.createElement('a');
+        link.href = UI.qrImage.src;
+        link.download = 'qrcode.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    },
+
+    async handleShareQR() {
+        if (navigator.share) {
+            try {
+                const file = new File([await fetch(UI.qrImage.src).then(r => r.blob())], 'qrcode.png', { type: 'image/png' });
+                await navigator.share({
+                    title: 'QR Code',
+                    text: 'Generated QR Code',
+                    files: [file],
+                });
+            } catch (error) {
+                alert('Error sharing: ' + error.message);
+            }
+        } else {
+            // Fallback: copy link or something
+            alert('Sharing not supported on this device');
         }
     },
 };
