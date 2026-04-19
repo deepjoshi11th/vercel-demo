@@ -87,8 +87,12 @@ const APP = {
             this.handleDownloadQR();
         });
 
-        UI.shareQrBtn.addEventListener('click', () => {
-            this.handleShareQR();
+        UI.shareWhatsappBtn.addEventListener('click', () => {
+            this.handleShareWhatsApp();
+        });
+
+        UI.shareFacebookBtn.addEventListener('click', () => {
+            this.handleShareFacebook();
         });
     },
 
@@ -243,22 +247,56 @@ const APP = {
         document.body.removeChild(link);
     },
 
-    async handleShareQR() {
-        if (navigator.share) {
-            try {
-                const file = new File([await fetch(UI.qrImage.src).then(r => r.blob())], 'qrcode.png', { type: 'image/png' });
-                await navigator.share({
-                    title: 'QR Code',
-                    text: 'Generated QR Code',
-                    files: [file],
-                });
-            } catch (error) {
-                alert('Error sharing: ' + error.message);
+    async handleShareWhatsApp() {
+        try {
+            // Convert blob to data URL for sharing
+            const response = await fetch(UI.qrImage.src);
+            const blob = await response.blob();
+            const dataUrl = await this.blobToDataURL(blob);
+            
+            // Try Web Share API first
+            if (navigator.share && navigator.canShare) {
+                const file = new File([blob], 'qrcode.png', { type: 'image/png' });
+                if (navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: 'QR Code',
+                        text: 'Check out this QR code!',
+                        files: [file],
+                    });
+                    return;
+                }
             }
-        } else {
-            // Fallback: copy link or something
-            alert('Sharing not supported on this device');
+            
+            // Fallback: Open WhatsApp Web with text
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent('Check out this QR code! ' + dataUrl)}`;
+            window.open(whatsappUrl, '_blank');
+        } catch (error) {
+            alert('Error sharing to WhatsApp: ' + error.message);
         }
+    },
+
+    async handleShareFacebook() {
+        try {
+            // Convert blob to data URL
+            const response = await fetch(UI.qrImage.src);
+            const blob = await response.blob();
+            const dataUrl = await this.blobToDataURL(blob);
+            
+            // Use Facebook sharer with the data URL
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(dataUrl)}&quote=${encodeURIComponent('Check out this QR code!')}`;
+            window.open(facebookUrl, '_blank');
+        } catch (error) {
+            alert('Error sharing to Facebook: ' + error.message);
+        }
+    },
+
+    blobToDataURL(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
     },
 };
 

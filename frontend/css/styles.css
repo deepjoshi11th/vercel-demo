@@ -4,6 +4,23 @@
     box-sizing: border-box;
 }
 
+/* Font Awesome Icons */
+.fas, .far, .fab {
+    margin-right: 0.5rem;
+}
+
+.card h3 .fas {
+    margin-right: 0.75rem;
+}
+
+.form-group label .fas {
+    margin-right: 0.5rem;
+}
+
+button .fas {
+    margin-right: 0.5rem;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     background-color: #000000;
@@ -344,6 +361,50 @@ code {
 .detail-meta {
     font-size: 0.75rem;
     color: #666666;
+}
+
+/* Social Media Share Buttons */
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    flex: 1;
+    min-width: 120px;
+}
+
+.social-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.social-btn .fab {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+}
+
+.whatsapp-btn {
+    background-color: #25d366;
+}
+
+.whatsapp-btn:hover {
+    background-color: #1da851;
+}
+
+.facebook-btn {
+    background-color: #1877f2;
+}
+
+.facebook-btn:hover {
+    background-color: #166fe5;
 }
 
 @media (max-width: 768px) {

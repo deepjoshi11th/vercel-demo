@@ -36,7 +36,8 @@ const UI = {
     qrResult: null,
     qrImage: null,
     downloadQrBtn: null,
-    shareQrBtn: null,
+    shareWhatsappBtn: null,
+    shareFacebookBtn: null,
 
     // Initialize DOM elements
     init() {
@@ -72,7 +73,8 @@ const UI = {
         this.qrResult = document.getElementById('qr-result');
         this.qrImage = document.getElementById('qr-image');
         this.downloadQrBtn = document.getElementById('download-qr');
-        this.shareQrBtn = document.getElementById('share-qr');
+        this.shareWhatsappBtn = document.getElementById('share-whatsapp');
+        this.shareFacebookBtn = document.getElementById('share-facebook');
     },
 
     // Show authentication UI (not logged in)
