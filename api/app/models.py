@@ -24,3 +24,9 @@ class ProfileDetailsRequest(BaseModel):
 class ProfileDetailsResponse(BaseModel):
     id: str
     sensitive_part: str
+
+class QRCodeRequest(BaseModel):
+    text: str
+    size: int = 5
+    back_color: tuple = (0, 0, 0)
+    fill_color: tuple = (255, 255, 255)
