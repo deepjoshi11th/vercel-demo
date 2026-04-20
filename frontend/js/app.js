@@ -91,9 +91,6 @@ const APP = {
             this.handleShareWhatsApp();
         });
 
-        UI.shareFacebookBtn.addEventListener('click', () => {
-            this.handleShareFacebook();
-        });
         UI.pasteBtn.addEventListener('click', () => {
             this.pasteFromClipboard();
         });
@@ -275,21 +272,6 @@ const APP = {
             window.open(whatsappUrl, '_blank');
         } catch (error) {
             alert('Error sharing to WhatsApp: ' + error.message);
-        }
-    },
-
-    async handleShareFacebook() {
-        try {
-            // Convert blob to data URL
-            const response = await fetch(UI.qrImage.src);
-            const blob = await response.blob();
-            const dataUrl = await this.blobToDataURL(blob);
-            
-            // Use Facebook sharer with the data URL
-            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(dataUrl)}&quote=${encodeURIComponent('Check out this QR code!')}`;
-            window.open(facebookUrl, '_blank');
-        } catch (error) {
-            alert('Error sharing to Facebook: ' + error.message);
         }
     },
 

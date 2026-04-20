@@ -37,7 +37,6 @@ const UI = {
     qrImage: null,
     downloadQrBtn: null,
     shareWhatsappBtn: null,
-    shareFacebookBtn: null,
     pasteBtn: null,
 
     // Initialize DOM elements
@@ -75,7 +74,6 @@ const UI = {
         this.qrImage = document.getElementById('qr-image');
         this.downloadQrBtn = document.getElementById('download-qr');
         this.shareWhatsappBtn = document.getElementById('share-whatsapp');
-        this.shareFacebookBtn = document.getElementById('share-facebook');
         this.pasteBtn = document.getElementById('paste-btn');
     },
 
