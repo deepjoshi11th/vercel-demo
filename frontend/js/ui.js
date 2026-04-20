@@ -224,4 +224,8 @@ const UI = {
             URL.revokeObjectURL(this.qrImage.src);
         }
     },
+
+    setQrText(value) {
+        this.qrText.value = value;
+    },
 };

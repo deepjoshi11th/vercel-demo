@@ -94,6 +94,9 @@ const APP = {
         UI.shareFacebookBtn.addEventListener('click', () => {
             this.handleShareFacebook();
         });
+        UI.pasteBtn.addEventListener('click', () => {
+            this.pasteFromClipboard();
+        });
     },
 
     async handleLogin() {
@@ -260,7 +263,7 @@ const APP = {
                 if (navigator.canShare({ files: [file] })) {
                     await navigator.share({
                         title: 'QR Code',
-                        text: 'Check out this QR code!',
+                        text: dataUrl,
                         files: [file],
                     });
                     return;
