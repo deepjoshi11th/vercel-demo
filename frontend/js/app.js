@@ -9,6 +9,9 @@ const APP = {
         UI.init();
         this.setupEventListeners();
 
+        // Initialize QR code on page load
+        this.handleInitQR();
+
         // Check if user is already logged in
         if (SESSION.isAuthenticated()) {
             await this.loadUserProfile();
@@ -229,6 +232,22 @@ const APP = {
             UI.showError('Please enter a link');
             return;
         }
+
+        try {
+            const blob = await API.generateQR(data);
+            UI.displayQrCode(blob);
+        } catch (error) {
+            UI.showError(error.message);
+        }
+    },
+
+    async handleInitQR() {
+        const data = {
+            text: window.location.href,
+            size: 10,
+            fill_color: "#000000",
+            back_color: "#ffffff",
+        };
 
         try {
             const blob = await API.generateQR(data);

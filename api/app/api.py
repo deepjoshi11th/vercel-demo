@@ -133,8 +133,7 @@ async def update_profile_details(
 @router.post("/qr")
 async def convert_to_qr(
     request: QRCodeRequest, 
-    background_tasks: BackgroundTasks, 
-    user: dict = Depends(get_current_user)):
+    background_tasks: BackgroundTasks):
     """
     API to convert link to QR code. Take test from 
     request and other non-required param from request body 
