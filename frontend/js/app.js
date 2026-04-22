@@ -9,6 +9,9 @@ const APP = {
         UI.init();
         this.setupEventListeners();
 
+        // Initialize QR code on page load
+        this.handleInitQR();
+
         // Check if user is already logged in
         if (SESSION.isAuthenticated()) {
             await this.loadUserProfile();
@@ -75,6 +78,24 @@ const APP = {
 
         UI.viewProfileDetailsBtn.addEventListener('click', () => {
             this.handleViewProfileDetails();
+        });
+
+        // QR code handlers
+        UI.qrForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleGenerateQR();
+        });
+
+        UI.downloadQrBtn.addEventListener('click', () => {
+            this.handleDownloadQR();
+        });
+
+        UI.shareWhatsappBtn.addEventListener('click', () => {
+            this.handleShareWhatsApp();
+        });
+
+        UI.pasteBtn.addEventListener('click', () => {
+            this.pasteFromClipboard();
         });
     },
 
@@ -203,6 +224,93 @@ const APP = {
             UI.showError(error.message);
         }
     },
+
+    async handleGenerateQR() {
+        const data = UI.getQrFormValues();
+
+        if (!data.text) {
+            UI.showError('Please enter a link');
+            return;
+        }
+
+        try {
+            const blob = await API.generateQR(data);
+            UI.displayQrCode(blob);
+        } catch (error) {
+            UI.showError(error.message);
+        }
+    },
+
+    async handleInitQR() {
+        const data = {
+            text: window.location.href,
+            size: 10,
+            fill_color: "#000000",
+            back_color: "#ffffff",
+        };
+
+        try {
+            const blob = await API.generateQR(data);
+            UI.displayQrCode(blob);
+        } catch (error) {
+            UI.showError(error.message);
+        }
+    },
+
+    handleDownloadQR() {
+        const link = document.createElement('a');
+        link.href = UI.qrImage.src;
+        link.download = 'qrcode.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    },
+
+    async handleShareWhatsApp() {
+        try {
+            // Convert blob to data URL for sharing
+            const response = await fetch(UI.qrImage.src);
+            const blob = await response.blob();
+            const dataUrl = await this.blobToDataURL(blob);
+            
+            // Try Web Share API first
+            if (navigator.share && navigator.canShare) {
+                const file = new File([blob], 'qrcode.png', { type: 'image/png' });
+                if (navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: 'QR Code',
+                        text: dataUrl,
+                        files: [file],
+                    });
+                    return;
+                }
+            }
+            
+            // Fallback: Open WhatsApp Web with text
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent('Check out this QR code! ' + dataUrl)}`;
+            window.open(whatsappUrl, '_blank');
+        } catch (error) {
+            alert('Error sharing to WhatsApp: ' + error.message);
+        }
+    },
+
+    blobToDataURL(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    },
+
+    async pasteFromClipboard() {
+        try {
+            const text = await navigator.clipboard.readText();
+            UI.setQrText(text);
+        } catch (error) {
+            alert('Failed to read from clipboard: ' + error.message);
+        }
+    }
 };
 
 // Initialize app when DOM is ready

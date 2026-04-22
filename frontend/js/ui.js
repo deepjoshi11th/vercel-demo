@@ -28,6 +28,16 @@ const UI = {
     saveProfileDetailsBtn: null,
     viewProfileDetailsBtn: null,
     profileDetailsDisplay: null,
+    qrForm: null,
+    qrText: null,
+    qrSize: null,
+    qrFill: null,
+    qrBack: null,
+    qrResult: null,
+    qrImage: null,
+    downloadQrBtn: null,
+    shareWhatsappBtn: null,
+    pasteBtn: null,
 
     // Initialize DOM elements
     init() {
@@ -55,6 +65,16 @@ const UI = {
         this.saveProfileDetailsBtn = document.getElementById('save-profile-details-btn');
         this.viewProfileDetailsBtn = document.getElementById('view-profile-details-btn');
         this.profileDetailsDisplay = document.getElementById('profile-details-display');
+        this.qrForm = document.getElementById('qr-form');
+        this.qrText = document.getElementById('qr-text');
+        this.qrSize = document.getElementById('qr-size');
+        this.qrFill = document.getElementById('qr-fill');
+        this.qrBack = document.getElementById('qr-back');
+        this.qrResult = document.getElementById('qr-result');
+        this.qrImage = document.getElementById('qr-image');
+        this.downloadQrBtn = document.getElementById('download-qr');
+        this.shareWhatsappBtn = document.getElementById('share-whatsapp');
+        this.pasteBtn = document.getElementById('paste-btn');
     },
 
     // Show authentication UI (not logged in)
@@ -177,5 +197,33 @@ const UI = {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    },
+
+    getQrFormValues() {
+        return {
+            text: this.qrText.value,
+            size: parseInt(this.qrSize.value) || 10,
+            fill_color: this.qrFill.value,
+            back_color: this.qrBack.value,
+        };
+    },
+
+    displayQrCode(blob) {
+        const url = URL.createObjectURL(blob);
+        this.qrImage.src = url;
+        this.qrResult.style.display = 'block';
+        // Store the blob URL for download/share
+        this.qrImage.dataset.blobUrl = url;
+    },
+
+    hideQrCode() {
+        this.qrResult.style.display = 'none';
+        if (this.qrImage.src) {
+            URL.revokeObjectURL(this.qrImage.src);
+        }
+    },
+
+    setQrText(value) {
+        this.qrText.value = value;
     },
 };
