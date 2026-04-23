@@ -5,7 +5,7 @@ from fastapi.openapi.utils import get_openapi
 
 from .auth import router as auth_router
 from .api import router as api_router
-
+from .game import router as game_router
 
 def create_app() -> FastAPI:
     """Create and configure FastAPI application."""
@@ -27,6 +27,7 @@ def create_app() -> FastAPI:
     # Include routers
     app.include_router(auth_router)
     app.include_router(api_router)
+    app.include_router(game_router)
 
     # Custom OpenAPI schema to define Bearer token security
     def custom_openapi():

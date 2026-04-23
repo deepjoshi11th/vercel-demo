@@ -30,3 +30,13 @@ class QRCodeRequest(BaseModel):
     size: int = 5
     back_color: str = "#000000"
     fill_color: str = "#FFFFFF"
+class Question(BaseModel):
+    id: str
+    text: str
+    options: list[str]
+    selected: str
+
+class Game(BaseModel):
+    id: str
+    userId: str
+    questions: list[Question]
