@@ -14,13 +14,13 @@ const AUTH = {
         }
 
         try {
-            const data = await API.call('/auth/signup', {
+            const data = await CLIENT.call('/auth/signup', {
                 method: 'POST',
                 body: JSON.stringify({ email, password }),
             });
 
             if (data.session && data.session.access_token) {
-                SESSION.setToken(data.session.access_token);
+                CLIENT.setToken(data.session.access_token);
                 return { success: true, user: data.user };
             } else {
                 return {
@@ -39,13 +39,13 @@ const AUTH = {
         }
 
         try {
-            const data = await API.call('/auth/login', {
+            const data = await CLIENT.call('/auth/login', {
                 method: 'POST',
                 body: JSON.stringify({ email, password }),
             });
 
             if (data.session && data.session.access_token) {
-                SESSION.setToken(data.session.access_token);
+                CLIENT.setToken(data.session.access_token);
                 return { success: true, user: data.user };
             } else {
                 return { success: false, error: 'Login failed' };
@@ -57,20 +57,25 @@ const AUTH = {
 
     async logout() {
         try {
-            await API.call('/auth/logout', { method: 'POST' });
+            await CLIENT.call('/auth/logout', { method: 'POST' });
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
-            SESSION.clearToken();
+            CLIENT.clearToken();
         }
     },
 
     async getCurrentUser() {
         try {
-            const user = await API.call('/auth/me');
+            const user = await CLIENT.call('/auth/me');
             return user;
         } catch (error) {
+            CLIENT.clearToken();
             throw error;
         }
+    },
+
+    isAuthenticated() {
+        return CLIENT.isAuthenticated();
     },
 };

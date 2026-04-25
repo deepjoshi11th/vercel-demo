@@ -328,6 +328,9 @@ code {
     border-radius: 6px;
     margin-bottom: 1rem;
     display: none;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .profile-details-card {

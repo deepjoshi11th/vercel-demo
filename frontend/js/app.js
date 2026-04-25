@@ -13,7 +13,7 @@ const APP = {
         this.handleInitQR();
 
         // Check if user is already logged in
-        if (SESSION.isAuthenticated()) {
+        if (AUTH.isAuthenticated()) {
             await this.loadUserProfile();
         } else {
             UI.showAuthUI();
@@ -156,7 +156,6 @@ const APP = {
             UI.showProtectedUI();
         } catch (error) {
             // Token is invalid
-            SESSION.clearToken();
             UI.showAuthUI();
             UI.showError('Session expired. Please login again.');
         }
