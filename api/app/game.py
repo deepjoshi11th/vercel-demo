@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from .models import Game, Question
 from .dependencies import get_current_user
 from .config import supabase
+from .gemini.question_gen import generate_question as gen_q
 
 router = APIRouter(prefix="/api/game", tags=["game"])
 
@@ -101,6 +102,50 @@ async def add_question(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Failed to update profile details: {str(e)}",
+        )
+
+@router.post("/questions/generate/{gameId}")
+async def generate_question(
+    gameId: str,
+    user: dict = Depends(get_current_user)
+):
+    """
+    Generate a new question for a game.
+    """
+    if not gameId:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Game ID is required to generate question",
+        )
+    try:
+        question = gen_q(gameId)
+        response = supabase.table("question").insert({
+            "text": question['text'],
+            "option1": question['options'][0],
+            "option2": question['options'][1],
+            "option3": question['options'][2],
+            "selected": 0,
+            "gameId": gameId,
+        }).execute()
+
+        if response.data:
+            return {
+                "success": True,
+                "data": {
+                    "id": response.data[0]["id"],
+                    "gameId": response.data[0]["gameId"],
+                    "text": response.data[0]["text"],
+                    "options": [response.data[0]["option1"], response.data[0]["option2"], response.data[0]["option3"]],
+                    "selected": response.data[0]["selected"],
+                    "cont": question['cont'] 
+                }
+            }
+        else:
+            raise Exception("Failed to add question to game")
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Failed to generate question for game {gameId}: {str(e)}",
         )
 
 @router.get("/questions/{gameId}")

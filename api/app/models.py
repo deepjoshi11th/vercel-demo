@@ -35,6 +35,7 @@ class Question(BaseModel):
     text: str
     options: list[str]
     selected: str
+    cont: bool
 
 class Game(BaseModel):
     id: str
