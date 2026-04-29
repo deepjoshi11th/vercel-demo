@@ -15,7 +15,8 @@ const GAME_UI = {
         this.protectedContent = document.querySelector('#protected-content');
         this.downloadSection = document.querySelector('#download-section');
         this.questionContainer = document.querySelector('#question');
-        this.optionsContainers = document.querySelectorAll('[id^=opt]');
+        this.optButtons = document.querySelectorAll('[id^=opt-btn]');
+        this.optionsContainers = document.querySelectorAll('[id^=opt-text]');
         this.judgementCard = document.querySelector('#judgement-card');
         this.judgementText = document.querySelector('#judgement');
     },
@@ -31,6 +32,9 @@ const GAME_UI = {
     },
 
     showResultUI() {
+        if (this.protectedContent.style.display === 'none') {
+            this.downloadSection.style.display = 'block';
+        }
         this.downloadSection.style.display = 'block';
     },
 
@@ -43,7 +47,7 @@ const GAME_UI = {
         this.questionContainer.textContent = question;
         options.forEach((option, index) => {
             const optContainer = this.optionsContainers[index];
-            optContainer.querySelector('p').textContent = option;
+            optContainer.textContent = option;
         });
     }
 };

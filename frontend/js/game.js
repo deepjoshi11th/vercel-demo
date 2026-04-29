@@ -1,8 +1,9 @@
 const GAME = {
     currentQuestionId: null,
+    gameId: null,
     async init() {
-        GAME_UI.init();
-        GAME.setupEventListeners();
+        await GAME_UI.init();
+        this.setupEventListeners();
 
         if (AUTH.isAuthenticated()) {
             await this.launchGame();
@@ -11,11 +12,11 @@ const GAME = {
         }
     },
 
-    setupEvemtListeners() {
+    setupEventListeners() {
         GAME_UI.optButtons.forEach((button, index) => {
             button.addEventListener('click', async () => {
                 const questionId = this.currentQuestionId;
-                const answer = index; // Assuming options are indexed from 0
+                const answer = GAME_UI.optionsContainers[index].textContent;
                 await this.submitAnswer(questionId, answer);
             });
         });
@@ -23,14 +24,13 @@ const GAME = {
 
     async launchGame() {
         try {
-            let gameId = await GAME_API.getGameIDForUser();
-            if (!gameId) {
-                gameId = await GAME_API.createGame();
+            let response = await GAME_API.getGameIDForUser();
+            if (!response.data) {
+                response = await GAME_API.createGame(); 
             }
-            let questionData = await GAME_API.generateNewQuestion(gameId);
-            GAME.currentQuestionId = questionData.id;
-            GAME_UI.updateQuestion(questionData.question, questionData.options);
-            GAME_UI.showProtectedContent();
+            this.gameId = response['data']['gameId'];
+            let questionData = await GAME_API.generateNewQuestion(this.gameId);
+            this.updateQuestion(questionData['data']);
         } catch (error) {
             console.error('Error launching game:', error);
             GAME_UI.showDefaultUI();
@@ -40,16 +40,23 @@ const GAME = {
     async submitAnswer(questionId, answer) {
         try {
             await GAME_API.submitAnswer(questionId, answer);
-            let response = await GAME_API.generateNewQuestion(gameId);
-            this.currentQuestionId = response.json().id;
-            GAME_UI.updateQuestion(response.question, response.options);
+            let response = await GAME_API.generateNewQuestion(this.gameId);
+            this.updateQuestion(response['data']);
         } catch (error) {
-            console.error('Error submitting answer:', error);}
+            console.error('Error submitting answer:', error);
+        }
+    },
+
+    updateQuestion(questionData) {
+        this.currentQuestionId = questionData['id'];
+        if (questionData['cont']) {
+            GAME.currentQuestionId = questionData['id'];
+            GAME_UI.updateQuestion(questionData['text'], questionData['options']);
+            GAME_UI.showProtectedContent();
+        } else {
+            GAME_UI.showResultUI();
         }
     }
-
-    
-
 };
 
 document.addEventListener('DOMContentLoaded', () => {
