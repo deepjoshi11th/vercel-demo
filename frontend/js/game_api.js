@@ -31,5 +31,12 @@ const GAME_API = {
         return CLIENT.call(`/api/game/answer/${questionId}?answer=${encodeURIComponent(answer)}`, {
             method: 'PATCH',
         });
+    },
+
+    async getJudgement(gameId) {
+        if (!gameId) {
+            throw new Error('Game ID is required');
+        }
+        return CLIENT.call(`/api/game/judgement/${gameId}`);
     }
 }

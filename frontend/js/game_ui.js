@@ -5,10 +5,11 @@ const GAME_UI = {
     questionContainer: null,
     optionsContainers: null,
     optButtons: null,
+    optTags: null,
     downloadSection:null,
     downloadButton: null,
-    judgementCard: null,
-    judgementText: null,
+    judgementTitle: null,
+    judgementJustification: null,
     
     async init() {
         this.heroSection = document.querySelector('.hero');
@@ -17,8 +18,11 @@ const GAME_UI = {
         this.questionContainer = document.querySelector('#question');
         this.optButtons = document.querySelectorAll('[id^=opt-btn]');
         this.optionsContainers = document.querySelectorAll('[id^=opt-text]');
-        this.judgementCard = document.querySelector('#judgement-card');
-        this.judgementText = document.querySelector('#judgement');
+        this.optTags = document.querySelectorAll('.tagline');
+        this.judgementTitle = document.querySelector('#j-title');
+        this.judgementJustification = document.querySelector('#j-just');
+        this.confirmityCheckbox = document.querySelector('#confirmity-checkbox');
+        this.downloadButton = document.querySelector('#download-btn');
     },
 
     showProtectedContent() {
@@ -32,22 +36,35 @@ const GAME_UI = {
     },
 
     showResultUI() {
-        if (this.protectedContent.style.display === 'none') {
-            this.downloadSection.style.display = 'block';
-        }
+        this.showProtectedContent();
         this.downloadSection.style.display = 'block';
     },
 
     showJudgement(judgement) {
-        this.judgementText.textContent = judgement;
-        this.judgementCard.style.display = 'block';
+        if (!this.confirmityCheckbox.checked) {
+           this.judgementTitle.textContent = judgement['critical']['title'];
+            this.judgementJustification.textContent = judgement['critical']['justification'];
+        } else {
+            this.judgementTitle.textContent = judgement['comformity']['title'];
+            this.judgementJustification.textContent = judgement['comformity']['justification'];
+        }
+
     },
 
     updateQuestion(question, options) {
         this.questionContainer.textContent = question;
         options.forEach((option, index) => {
-            const optContainer = this.optionsContainers[index];
-            optContainer.textContent = option;
+            let oIndex = option.indexOf('(');
+            let cIndex = option.indexOf(')');
+            if (oIndex !== -1 && cIndex !== -1 && cIndex > oIndex) {
+                this.optTags[index].textContent = option.substring(oIndex + 1, cIndex);
+                const optContainer = this.optionsContainers[index];
+                optContainer.textContent = option.substring(0, oIndex).trim();
+            } else {
+                this.optTags[index].textContent = 'Option ' + (index + 1);
+                const optContainer = this.optionsContainers[index];
+                optContainer.textContent = option;
+            }
         });
     }
 };

@@ -1,6 +1,8 @@
 const GAME = {
     currentQuestionId: null,
     gameId: null,
+    text: null,
+    options: null,
     async init() {
         await GAME_UI.init();
         this.setupEventListeners();
@@ -16,10 +18,11 @@ const GAME = {
         GAME_UI.optButtons.forEach((button, index) => {
             button.addEventListener('click', async () => {
                 const questionId = this.currentQuestionId;
-                const answer = GAME_UI.optionsContainers[index].textContent;
+                const answer = index;
                 await this.submitAnswer(questionId, answer);
             });
         });
+        GAME_UI.downloadButton.addEventListener('click', this.updateJudgement);
     },
 
     async launchGame() {
@@ -37,9 +40,9 @@ const GAME = {
         }
     },
 
-    async submitAnswer(questionId, answer) {
+    async submitAnswer(questionId, answerIndex) {
         try {
-            await GAME_API.submitAnswer(questionId, answer);
+            await GAME_API.submitAnswer(questionId, this.options[answerIndex]);
             let response = await GAME_API.generateNewQuestion(this.gameId);
             this.updateQuestion(response['data']);
         } catch (error) {
@@ -49,12 +52,29 @@ const GAME = {
 
     updateQuestion(questionData) {
         this.currentQuestionId = questionData['id'];
+        this.text = questionData['text'];
+        this.options = questionData['options'];
         if (questionData['cont']) {
             GAME.currentQuestionId = questionData['id'];
-            GAME_UI.updateQuestion(questionData['text'], questionData['options']);
+            GAME_UI.updateQuestion(this.text, this.options);
             GAME_UI.showProtectedContent();
         } else {
             GAME_UI.showResultUI();
+        }
+    },
+
+    async updateJudgement() {
+        const judgement =  await GAME.callJudgement();
+        GAME_UI.showJudgement(judgement);
+    },
+
+    async callJudgement() {
+        try {
+            const response = await GAME_API.getJudgement(this.gameId);
+            return response['data'];
+        } catch (error) {
+            console.error('Error getting judgement:', error);
+            return null;
         }
     }
 };

@@ -4,6 +4,7 @@ from .models import Game, Question
 from .dependencies import get_current_user
 from .config import supabase
 from .gemini.question_gen import generate_question as gen_q
+from .gemini.question_gen import generate_judgement as gen_j
 
 router = APIRouter(prefix="/api/game", tags=["game"])
 
@@ -213,4 +214,27 @@ async def select_answer(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Failed to select answer for question {questionId}: {str(e)}",
+        )
+
+@router.get("/judgement/{gameId}")
+async def get_judgement(
+    gameId: str,
+    user: dict = Depends(get_current_user)
+):
+    """
+    Get judgement for a specific game.
+    RLS ensures users can only see their own data.
+    """
+    try:
+        judgement = gen_j(gameId)
+        return {
+            "success": True,
+            "data": judgement
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Failed to fetch judgement for game {gameId}: {str(e)}",
         )

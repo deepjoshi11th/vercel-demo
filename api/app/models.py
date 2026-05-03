@@ -41,3 +41,12 @@ class Game(BaseModel):
     id: str
     userId: str
     questions: list[Question]
+
+# In There are Two Judgements in this model. In gujarati bij menas seed. While this one is opposite of seed.
+class BiJ(BaseModel):
+    comformity: Judgement
+    critical: Judgement
+
+class Judgement(BaseModel):
+    title: str
+    justification: str
