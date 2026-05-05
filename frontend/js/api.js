@@ -30,28 +30,12 @@ const API = {
     },
 
     async generateQR(data) {
-        const token = SESSION.getToken();
-        const headers = {
-            'Content-Type': 'application/json',
-            ...(token && { 'Authorization': `Bearer ${token}` }),
-        };
-
-        const response = await fetch(`${this.baseURL}/api/qr`, {
+        if (!data) {
+            throw new Error('Data is required to generate QR code');
+        }
+        return CLIENT.call('/api/qr', {
             method: 'POST',
-            headers,
             body: JSON.stringify(data),
-        });
-
-        if (response.status === 401) {
-            SESSION.clearToken();
-            throw new Error('Session expired. Please login again.');
-        }
-
-        if (!response.ok) {
-            const error = await response.text();
-            throw new Error(error || `API Error: ${response.status}`);
-        }
-
-        return response.blob();
+        }, responseType = 'blob');
     },
 };

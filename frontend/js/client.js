@@ -20,7 +20,7 @@ const CLIENT = {
         return !!this.getToken();
     },
 
-    async call(endpoint, options = {}) {
+    async call(endpoint, options = {}, responseType = 'json') {
         const token = this.getToken();
         const headers = {
             'Content-Type': 'application/json',
@@ -45,6 +45,10 @@ const CLIENT = {
                 throw new Error(error.detail || `API Error: ${response.status}`);
             }
                       
+            if (responseType === 'blob') {
+                return response.blob();
+            }
+            
             return response.json();
         } catch (error) {
             throw error;
