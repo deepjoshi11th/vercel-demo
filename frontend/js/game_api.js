@@ -38,5 +38,12 @@ const GAME_API = {
             throw new Error('Game ID is required');
         }
         return CLIENT.call(`/api/game/judgement/${gameId}`);
+    },
+
+    async deleteGame(gameId) {
+        if (!gameId) {
+            throw new Error('Game ID is required');
+        }
+        return CLIENT.call(`/api/game/${gameId}`, { method: 'DELETE' });
     }
 }

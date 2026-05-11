@@ -29,10 +29,22 @@
             <p class="subtitle">Sweat more in peace to bleed less in war</p>
             <p>Login to contiue to game.</p>
         </div>
+        <!-- Game Menu Section -->
+        <div id="game-menu" style="display: none; width: 100%;">
+            <div style="max-width: 500px; margin: 0 auto;">
+                <h2>Choose an Option</h2>
+                <p style="color: #888888; margin-bottom: 2rem;">Start a new game or resume your existing one</p>
+                <div class="game-menu-buttons">
+                    <button id="resume-game-btn" class="menu-button menu-button-primary" style="display: none;">Resume Game</button>
+                    <button id="start-new-game-btn" class="menu-button menu-button-primary">Start New Game</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Protected Content (shown when logged in) -->
         <div id="protected-content" style="display: none; width: 100%;">
             <!-- Question Section -->
-            <div style="max-width: 900px; margin-left: auto; margin-right: auto; margin-bottom: 3rem;">
+            <div id="game-section" style="max-width: 900px; margin-left: auto; margin-right: auto; margin-bottom: 3rem;">
                 <div class="cards" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">    
                     <div class="card">
                         <p id="question">How is things in life going.</p>
@@ -60,20 +72,44 @@
             </div>
     
 
-            <!-- Download Section -->
+            <!-- Result Section -->
             <div id="download-section" class="cards" style="display: none;">
                 <div class="card">
-                    <h3>& Done</h3>
+                    <h3>Game Complete!</h3>
                     <p>You have shown your skills now is the time for evaluation</p>
-                    <button id="download-btn"><i class="fa-solid fa-ranking-star"></i>Judge Me</button>
+                    <button id="download-btn"><i class="fa-solid fa-ranking-star"></i>Check Result</button>
                 </div>
-                <div id="judgement-card" class="card">
+                <div id="judgement-card" class="card" style="display: none;">
                     <h3 id="j-title">Here it is</h3>
                     <p id="j-just">An AI slop evaluating your human performance</p>
                     <input type="checkbox" id="confirmity-checkbox" style="width:auto" checked>
                     <label for="confirmity-checkbox">Confirmity</label>
                 </div>
-                </div>    
+            </div>
+
+            <!-- Back to Menu Button -->
+            <div id="back-to-menu-section" style="display: none; text-align: center; margin-top: 2rem;">
+                <button id="back-to-menu-btn" class="menu-button menu-button-secondary">Back to Menu</button>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loading-overlay" class="loading-overlay" style="display: none;">
+                <div class="loading-container">
+                    <div class="spinner"></div>
+                    <p class="loading-text">Loading next question...</p>
+                </div>
+            </div>
+
+            <!-- Error State with Retry -->
+            <div id="error-overlay" class="error-overlay" style="display: none;">
+                <div class="error-container">
+                    <h3>Oops! Something went wrong</h3>
+                    <p id="error-message">Failed to load the next question. Please try again.</p>
+                    <div class="error-buttons">
+                        <button id="retry-btn" class="menu-button menu-button-primary">Retry</button>
+                        <button id="error-back-btn" class="menu-button menu-button-secondary">Back to Menu</button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

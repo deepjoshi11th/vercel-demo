@@ -238,3 +238,35 @@ async def get_judgement(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Failed to fetch judgement for game {gameId}: {str(e)}",
         )
+
+@router.delete("/{gameId}")
+async def delete_game(
+    gameId: str,
+    user: dict = Depends(get_current_user)
+):
+    """
+    Delete a game and all its related questions for authenticated user.
+    Uses RLS to ensure users can only modify their own data.
+    """
+    try:
+        # Delete questions first
+        supabase.table("question").delete().eq("gameId", gameId).execute()
+        
+        # Delete the game
+        response = supabase.table("game").delete().eq("gameid", gameId).execute()
+        
+        if response.data:
+            return {
+                "success": True,
+                "data": "Game and questions deleted successfully"
+            }
+        else:
+            raise Exception("Failed to delete game")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Failed to delete game {gameId}: {str(e)}",
+        )
+
