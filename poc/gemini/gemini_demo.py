@@ -19,15 +19,12 @@ if __name__ == "__main__":
             system_instruction += line
     # print(system_instruction)
     response = client.models.generate_content(
-        model="gemini-3-flash-preview",
+        model="gemma-4-31b-it",
         contents="I am working on a Java server which have the remove background functionality which is executed on backend, hosted on serverless platform like vercel. The image output is png files without watermark but with 512KB of input size limit. VCS is github.",
         config=types.GenerateContentConfig(
             response_mime_type='application/json',
             response_schema= Question,
-            thinking_config=types.ThinkingConfig(
-                include_thoughts=False,
-                thinking_budget=0,
-            ),system_instruction=system_instruction
+            system_instruction=system_instruction
         )
     )
 
