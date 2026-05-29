@@ -4,87 +4,38 @@
  */
 
 const API = {
-    baseURL: window.location.origin,
-
-    async call(endpoint, options = {}) {
-        const token = SESSION.getToken();
-        const headers = {
-            'Content-Type': 'application/json',
-            ...(token && { 'Authorization': `Bearer ${token}` }),
-            ...options.headers,
-        };
-
-        try {
-            const response = await fetch(`${this.baseURL}${endpoint}`, {
-                ...options,
-                headers,
-            });
-
-            if (response.status === 401) {
-                // Token invalid or expired
-                SESSION.clearToken();
-                throw new Error('Session expired. Please login again.');
-            }
-
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.detail || `API Error: ${response.status}`);
-            }
-
-            return response.json();
-        } catch (error) {
-            throw error;
-        }
-    },
-
     async fetchAllData() {
-        return this.call('/api/data');
+        return CLIENT.call('/api/data');
     },
 
     async fetchItem(itemId) {
         if (!itemId) {
             throw new Error('Item ID is required');
         }
-        return this.call(`/api/items/${itemId}`);
+        return CLIENT.call(`/api/items/${itemId}`);
     },
 
     async getProfileDetails() {
-        return this.call('/api/profile-details');
+        return CLIENT.call('/api/profile-details');
     },
 
     async updateProfileDetails(sensitivePart) {
         if (!sensitivePart) {
             throw new Error('Sensitive part is required');
         }
-        return this.call('/api/profile-details', {
+        return CLIENT.call('/api/profile-details', {
             method: 'POST',
             body: JSON.stringify({ sensitive_part: sensitivePart }),
         });
     },
 
     async generateQR(data) {
-        const token = SESSION.getToken();
-        const headers = {
-            'Content-Type': 'application/json',
-            ...(token && { 'Authorization': `Bearer ${token}` }),
-        };
-
-        const response = await fetch(`${this.baseURL}/api/qr`, {
+        if (!data) {
+            throw new Error('Data is required to generate QR code');
+        }
+        return CLIENT.call('/api/qr', {
             method: 'POST',
-            headers,
             body: JSON.stringify(data),
-        });
-
-        if (response.status === 401) {
-            SESSION.clearToken();
-            throw new Error('Session expired. Please login again.');
-        }
-
-        if (!response.ok) {
-            const error = await response.text();
-            throw new Error(error || `API Error: ${response.status}`);
-        }
-
-        return response.blob();
+        }, responseType = 'blob');
     },
 };
