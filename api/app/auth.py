@@ -1,5 +1,5 @@
 """Authentication endpoints."""
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Request
 from .models import SignupRequest, LoginRequest, UserResponse
 from .config import supabase
 from .dependencies import get_current_user
@@ -9,14 +9,18 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/signup", response_model=dict)
-async def signup(request: SignupRequest):
+async def signup(request_body: SignupRequest, request: Request):
     """
     Sign up with email and password.
     """
     try:
+        redirect_url = str(request.url)
         response = supabase.auth.sign_up({
-            "email": request.email,
-            "password": request.password,
+            "email": request_body.email,
+            "password": request_body.password,
+            "options": {
+                "email_redirect_to": redirect_url
+            }
         })
         return {
             "user": {
